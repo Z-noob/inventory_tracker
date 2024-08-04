@@ -96,96 +96,172 @@ export default function Home() {
       justifyContent="center"
       alignItems="center"
       gap={2}
+      p={2}
+      bgcolor="#e6e6fa"
     >
       <Modal open={open} onClose={handleClose}>
-        <Box position="absolute" top="50%" left="50%" width={400} 
-        bgcolor="white" border="2px solid #000" boxShadow={24} p={4} display="flex"
-        flexDirection="column" gap={3} sx={{transform: 'translate(-50%, -50%)',}}>
+        <Box 
+          position="absolute" 
+          top="50%" 
+          left="50%" 
+          width={{ xs: '90%', sm: 400 }} 
+          bgcolor="white" 
+          border="2px solid #000" 
+          boxShadow={24} 
+          p={4} 
+          display="flex"
+          flexDirection="column" 
+          gap={3}
+          sx={{ transform: 'translate(-50%, -50%)' }}
+        >
           <Typography variant="h6">Add Item</Typography>
           <Stack width="100%" direction="row" spacing={2}>
-            <TextField variant="outlined" fullWidth value={itemName}
-            onChange={(e) => {
-              setItemName(e.target.value)
-            }}/>
-            <Button variant="outlined" onClick={() => {
-              addItem(itemName)
-              setItemName('')
-              handleClose()
-            }}>Add</Button>
+            <TextField 
+              variant="outlined" 
+              fullWidth 
+              value={itemName}
+              onChange={(e) => setItemName(e.target.value)}
+            />
+            <Button 
+              variant="outlined" 
+              onClick={() => {
+                addItem(itemName);
+                setItemName('');
+                handleClose();
+              }}
+            >
+              Add
+            </Button>
           </Stack>
         </Box>
       </Modal>
-      <Button variant="contained" onClick={() => {
-        handleOpen()
-      }}>Add New Item</Button>
-      <Stack width="100%" direction="row" spacing={2} display="flex" justifyContent="center">
-        <TextField variant="outlined" Width="80%" value={searchItem}
+      <Button 
+        variant="contained" 
+        onClick={handleOpen}
+        sx={{ mb: 2 }}
+      >
+        Add New Item
+      </Button>
+      <Stack 
+        width="100%" 
+        maxWidth="800px" 
+        direction="row" 
+        spacing={2} 
+        display="flex" 
+        justifyContent="center"
+        mb={2}
+      >
+        <TextField 
+          variant="outlined" 
+          fullWidth 
+          value={searchItem}
           onChange={(e) => setSearchItem(e.target.value)}
-          onKeyDown={handleKeyDown} // Add the keydown handler
+          onKeyDown={handleKeyDown}
           placeholder="Enter Item to search"
         />
         <Button
           variant="outlined"
-          onClick={handleSearch} // Trigger the search function on button click
-        >Search</Button>
+          onClick={handleSearch}
+        >
+          Search
+        </Button>
       </Stack>
-      <Stack width="800px" height="80px" spacing={2} overflow="auto">
-         {result ? (
-            <Box width="100%" minHeight="85%" display="flex"
-             alignItems="center" justifyContent="space-between" bgcolor="#f0f0f0" p={2}>
-              <Typography variant="h6" color="#333">
-                {result.name.charAt(0).toUpperCase() + result.name.slice(1)}
-              </Typography>
-              <Typography variant="h6" color="#333">
-                {result.quantity}
-              </Typography>
-              <Stack direction="row" spacing={2}>
-              <Button variant="contained" onClick={() => {
-                addItem(result.name)
-              }}>Add</Button>
-              <Button variant="contained" onClick={() => {
-                removeItem(result.name)
-              }}>Remove</Button>
-              </Stack>
-           </Box>
-          ) : (
-            <Typography variant="h6" color="#999">
-              No result found
+      <Stack 
+        width="100%" 
+        maxWidth="800px" 
+        spacing={2} 
+        p={2}
+      >
+        {result ? (
+          <Box 
+            width="100%" 
+            minHeight={{ xs: 'auto', sm: '85%' }} 
+            display="flex" 
+            flexDirection={{ xs: 'column', sm: 'row' }} 
+            alignItems="center" 
+            justifyContent="space-between" 
+            bgcolor="#d0f0c0" 
+            p={2}
+          >
+            <Typography variant="h6" color="#333">
+              {result.name.charAt(0).toUpperCase() + result.name.slice(1)}
             </Typography>
-          )}
-        </Stack>
-      <Box border="1px solid #333">
-        <Box width="800px" height="100px" bgcolor="ADD8E6" 
-        display="flex" alignItems="center" justifyContent="center">
-          <Typography variant="h2" color="#333">
-             Inventory Items
+            <Typography variant="h6" color="#333">
+              {result.quantity}
+            </Typography>
+            <Stack direction="row" spacing={2} mt={{ xs: 2, sm: 0 }}>
+              <Button variant="contained" onClick={() => addItem(result.name)}>
+                Add
+              </Button>
+              <Button variant="contained" onClick={() => removeItem(result.name)}>
+                Remove
+              </Button>
+            </Stack>
+          </Box>
+        ) : (
+          <Typography variant="h6" color="#999" textAlign="center">
+            No result found
+          </Typography>
+        )}
+      </Stack>
+      <Box 
+        border="1px solid #333"  
+        p={2} 
+        maxWidth="800px" 
+        width="100%" 
+        overflow="auto"
+        boxSizing="border-box"
+      >
+        <Box 
+          width="100%" 
+          bgcolor="#ADD8E6" 
+          display="flex" 
+          alignItems="center" 
+          justifyContent="center" 
+          p={2} 
+          mb={2}
+        >
+          <Typography variant="h2" color="#333" textAlign="center">
+            Inventory Items
           </Typography>
         </Box>
-      
-      <Stack width="800px" height="300px" spacing={2} overflow="auto">
-        {
-          inventory.map(({name, quantity}) => (
-            <Box key={name} width="100%" minHeight="150px" display="flex"
-            alignItems="center" justifyContent="space-between" bgColor="#f0f0f0" padding={5}>
+        <Stack 
+          width="100%" 
+          spacing={2} 
+          p={2}
+        >
+          {inventory.map(({ name, quantity }) => (
+            <Box 
+              key={name} 
+              width="100%" 
+              minHeight="150px" 
+              display="flex" 
+              flexDirection={{ xs: 'column', sm: 'row' }}
+              alignItems="center" 
+              justifyContent="space-between" 
+              bgcolor="#f0f0f0" 
+              p={2} 
+              borderRadius={1} 
+              boxShadow={1}
+            >
               <Typography variant="h3" color="#333" textAlign="center">
                 {name.charAt(0).toUpperCase() + name.slice(1)}
               </Typography>
               <Typography variant="h3" color="#333" textAlign="center">
                 {quantity}
               </Typography>
-              <Stack direction="row" spacing={2}>
-              <Button variant="contained" onClick={() => {
-                addItem(name)
-              }}>Add</Button>
-              <Button variant="contained" onClick={() => {
-                removeItem(name)
-              }}>Remove</Button>
+              <Stack direction="row" spacing={2} mt={{ xs: 2, sm: 0 }}>
+                <Button variant="contained" onClick={() => addItem(name)}>
+                  Add
+                </Button>
+                <Button variant="contained" onClick={() => removeItem(name)}>
+                  Remove
+                </Button>
               </Stack>
             </Box>
-          ))
-        }
-      </Stack>
+          ))}
+        </Stack>
+      </Box>
     </Box>
-    </Box>
-  )
+  );
 }
