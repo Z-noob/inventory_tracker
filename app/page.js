@@ -16,6 +16,8 @@ export default function Home() {
   const [ inventory, setInventory ] = useState([])
   const [ open, setOpen ] = useState(false)
   const [ itemName, setItemName ] = useState('')
+  const [ searchItem, setSearchItem] = useState('');
+  const [result, setResult] = useState(null);
 
   const updateInventory = async () => {
     const snapshot = query(collection(firestore, 'inventory'))
@@ -64,6 +66,24 @@ export default function Home() {
     updateInventory()
   }, [])
 
+  const handleSearch = () => {
+    const trimmedSearchItem = searchItem.trim();
+    if (trimmedSearchItem) {
+      // Find a single matching item
+      const foundItem = inventory.find(item =>
+        item.name.toLowerCase().includes(trimmedSearchItem.toLowerCase())
+      );
+      setResult(foundItem || null); // Update result state with the found item or null
+      setSearchItem(''); // Clear the input field
+    }
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch(); // Trigger the search function when Enter is pressed
+    }
+  };
+
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
@@ -98,6 +118,42 @@ export default function Home() {
       <Button variant="contained" onClick={() => {
         handleOpen()
       }}>Add New Item</Button>
+      <Stack width="100%" direction="row" spacing={2} display="flex" justifyContent="center">
+        <TextField variant="outlined" Width="80%" value={searchItem}
+          onChange={(e) => setSearchItem(e.target.value)}
+          onKeyDown={handleKeyDown} // Add the keydown handler
+          placeholder="Enter Item to search"
+        />
+        <Button
+          variant="outlined"
+          onClick={handleSearch} // Trigger the search function on button click
+        >Search</Button>
+      </Stack>
+      <Stack width="800px" height="80px" spacing={2} overflow="auto">
+         {result ? (
+            <Box width="100%" minHeight="85%" display="flex"
+             alignItems="center" justifyContent="space-between" bgcolor="#f0f0f0" p={2}>
+              <Typography variant="h6" color="#333">
+                {result.name.charAt(0).toUpperCase() + result.name.slice(1)}
+              </Typography>
+              <Typography variant="h6" color="#333">
+                {result.quantity}
+              </Typography>
+              <Stack direction="row" spacing={2}>
+              <Button variant="contained" onClick={() => {
+                addItem(result.name)
+              }}>Add</Button>
+              <Button variant="contained" onClick={() => {
+                removeItem(result.name)
+              }}>Remove</Button>
+              </Stack>
+           </Box>
+          ) : (
+            <Typography variant="h6" color="#999">
+              No result found
+            </Typography>
+          )}
+        </Stack>
       <Box border="1px solid #333">
         <Box width="800px" height="100px" bgcolor="ADD8E6" 
         display="flex" alignItems="center" justifyContent="center">
